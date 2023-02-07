@@ -33,11 +33,31 @@ export const channels = (app: Application) => {
   })
 
   // eslint-disable-next-line no-unused-vars
-  app.publish((data: any, context: HookContext) => {
-    // Here you can add event publishers to channels set up in `channels.js`
-    // To publish only for a specific event use `app.publish(eventname, () => {})`
-
-    // e.g. to publish all service events to all authenticated users use
-    return app.channel('authenticated')
+  app.publish("created", (data: any, context: HookContext) => {
+    logger.info("created event")
+    return app.channel('anonymous')
   })
+  // eslint-disable-next-line no-unused-vars
+  app.publish("updated", (data: any, context: HookContext) => {
+    logger.info("updated event")
+    return app.channel('anonymous')
+  })
+  // eslint-disable-next-line no-unused-vars
+  app.publish("patched", (data: any, context: HookContext) => {
+    logger.info("patched event")
+    return app.channel('anonymous')
+  })
+  // eslint-disable-next-line no-unused-vars
+  app.publish("removed", (data: any, context: HookContext) => {
+    logger.info("removed event")
+    return app.channel('anonymous')
+  })
+
+  // // eslint-disable-next-line no-unused-vars
+  // app.publish((data: any, context: HookContext) => {
+  //   // Here you can add event publishers to channels set up in `channels.js`
+  //   // To publish only for a specific event use `app.publish(eventname, () => {})`
+  //   // e.g. to publish all service events to all authenticated users use
+  //   return app.channel('authenticated')
+  // })
 }

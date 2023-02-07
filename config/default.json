@@ -11,7 +11,7 @@
   },
   "postgresql": {
     "client": "pg",
-    "connection": "postgres://postgres:@postgresql.local:5432/feathers-chat"
+    "connection": "postgresql://postgres:postgres@postgresql.local:5432/test?schema=public"
   },
   "authentication": {
     "entity": "user",
