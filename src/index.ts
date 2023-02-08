@@ -7,9 +7,9 @@ process.on('unhandledRejection', (reason, p) => logger.error('Unhandled Rejectio
 
 
 async function main() {
-  // app.listen(port).then(() => {
-  //   logger.info(`Feathers app listening on http://${host}:${port}`)
-  // })
+  app.listen(port).then(() => {
+    logger.info(`Feathers app listening on http://${host}:${port}`)
+  })
 }
 
 

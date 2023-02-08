@@ -65,7 +65,7 @@
     "@feathersjs/transport-commons": "^5.0.0-pre.36",
     "@feathersjs/typebox": "^5.0.0-pre.36",
     "dotenv": "^16.0.3",
-    "feathers-mq": "github:oizpans/feathers-mq",
+    "feathers-nats-distributed": "github:nathanbrizzee-cdcr/feathers-nats-distributed",
     "feathers-sync": "^3.0.1",
     "get-port-please": "^3.0.1",
     "knex": "^2.4.2",
