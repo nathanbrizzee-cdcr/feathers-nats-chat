@@ -1,5 +1,5 @@
 {
-  "name": "feathers-chat",
+  "name": "@cdcr/service-template",
   "description": "short  desc",
   "version": "0.0.0",
   "homepage": "",
@@ -46,6 +46,7 @@
     "mocha": "cross-env NODE_ENV=test mocha test/ --require ts-node/register --recursive --extension .ts --exit",
     "test": "cross-env NODE_ENV=test npm run migrate && npm run mocha",
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
+    "migrate:createdb": "node ./src/createDatabase.js",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make"
   },
@@ -68,7 +69,6 @@
     "feathers-nats-distributed": "github:nathanbrizzee-cdcr/feathers-nats-distributed",
     "feathers-sync": "^3.0.1",
     "get-port-please": "^3.0.1",
-    "knex": "^2.4.2",
     "pg": "^8.9.0",
     "winston": "^3.8.2"
   },
@@ -82,6 +82,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.19",
     "axios": "^1.3.2",
+    "config": "^3.3.9",
     "cross-env": "^7.0.3",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20",

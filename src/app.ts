@@ -8,7 +8,7 @@ import { feathers } from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
 import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
 //import socketio from '@feathersjs/socketio'
-import { FeathersError, NotFound } from '@feathersjs/errors'
+import { FeathersError, NotFound, GeneralError } from '@feathersjs/errors'
 import type { Application } from './declarations'
 import { configurationValidator } from './configuration'
 import { logError } from './hooks/log-error'
@@ -18,19 +18,16 @@ import { services } from './services/index'
 import { channels } from './channels'
 import { ConnectionOptions } from 'nats'
 
+const packageFile = require("../package.json")
+
 const debug = require('debug')
 
 feathers.setDebug(debug)
 
-// const { Server } = require('feathers-mq');
-// @ts-expect-error
 import { Server }  from 'feathers-nats-distributed';
 import {nats as sync} from "feathers-sync"
 
 const app: Application = koa(feathers())
-// set the name of app - required
-//// @ts-expect-error
-// app.set("name", "ServerName");
 
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator))
@@ -74,23 +71,16 @@ app.hooks({
 
 const url:string = "nats.local"
 const port: number = 4222;
-const jsonMode:boolean = true;
 const NATSurl:string =`nats://${url}:${port}`
+const AppName = String(packageFile.name).split("/").pop()?.replace("@", "")
 const natsConfig: ConnectionOptions = {
-  servers: "nats.local:4222",
-  debug: false, // Do not set to true in Production
-  verbose: false, // Do not set to true in Production
-  name: "ServerName",
-  timeout: 60000, // 20000 is default
+  servers: ["nats.local:4222"],
+  name: AppName,
+  timeout: 20000, // 20000 is default
 }
 
-// setup mq transport for server
-// app.configure(Server({
-//   url: url, // hostname for NATS - optional (defaults to `localhost`)
-//   port: port, // port(s) for NATS - optional (defaults to 4222)
-// }));
 app.configure(Server({
-  appName:"ServerName",
+  appName: AppName,
   natsConfig: natsConfig
 }));
 
@@ -115,15 +105,18 @@ app.use(errorHandler2())
 
 app.configure(
   sync({
-    uri: `nats://${url}:${port}`,
+    uri: NATSurl,
     key: 'feathers-sync.nats',
-    natsConnectionOptions: {
-      servers: [`${url}:${port}`]
-    }
+    natsConnectionOptions: natsConfig
   })
 );
 
 export { app }
 // nats request ServerName.users.create '{"data": {"email":"nathan.brizzee4@cdcr.ca.gov", "password": "supersecret"}}'
+// nats request ServerName.create.users '{"data": {"email":"nathan.brizzee4@cdcr.ca.gov", "password": "supersecret"}}'
+// nats request ServerName.get.users '{}'
+// nats request ServerName.find.users '{}'
+// nats request ServerName.get.users '{"id": "1"}'
+// nats request ServerName.find.users '{"params": {"query": {"$limit":1, "$skip": 1}}}'
 // nats sub "*.>"
 

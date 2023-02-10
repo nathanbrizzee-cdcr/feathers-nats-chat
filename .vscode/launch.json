@@ -17,7 +17,8 @@
         "${workspaceFolder}/lib/**/*.js"
       ],
       "outputCapture": "std",
-      "sourceMaps": true
+      "sourceMaps": true,
+      "runtimeArgs": ["--preserve-symlinks"]
     }
   ]
 }

@@ -3,7 +3,9 @@ import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('users', (table) => {
-    table.increments('id')
+    //table.increments('id')
+    // table.uuid('id', {useBinaryUuid:false, primaryKey:true})
+    table.uuid('id').primary().defaultTo(knex.raw("uuid_generate_v4 ()"))
     table.string('text')
   })
 }
