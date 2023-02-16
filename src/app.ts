@@ -1,12 +1,12 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/application.html
 //import dotenv from "dotenv";
 //dotenv.config();
-"use strict"
-import "dotenv/config"
+'use strict'
+import 'dotenv/config'
 
 import { feathers } from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
-import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
+import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic, FeathersKoaContext } from '@feathersjs/koa'
 //import socketio from '@feathersjs/socketio'
 import { FeathersError, NotFound, GeneralError } from '@feathersjs/errors'
 import type { Application } from './declarations'
@@ -18,14 +18,14 @@ import { services } from './services/index'
 import { channels } from './channels'
 import { ConnectionOptions } from 'nats'
 
-const packageFile = require("../package.json")
+const packageFile = require('../package.json')
 
 const debug = require('debug')
 
 feathers.setDebug(debug)
 
-import { Server }  from 'feathers-nats-distributed';
-import {nats as sync} from "feathers-sync"
+import { Server, Client, InitConfig } from 'feathers-nats-distributed'
+import { nats as sync } from 'feathers-sync'
 
 const app: Application = koa(feathers())
 
@@ -68,23 +68,30 @@ app.hooks({
   teardown: []
 })
 
-
-const url:string = "nats.local"
-const port: number = 4222;
-const NATSurl:string =`nats://${url}:${port}`
-const AppName = String(packageFile.name).split("/").pop()?.replace("@", "") || ""
+const url: string = 'nats.local'
+const port: number = 4222
+const NATSurl: string = `nats://${url}:${port}`
+//const AppName = String(packageFile.name).split("/").pop()?.replace("@", "") || ""
+const AppName = String(packageFile.name) || ''
 const natsConfig: ConnectionOptions = {
-  servers: ["nats.local:4222"],
+  servers: ['nats.local:4222'],
   name: AppName,
-  timeout: 20000, // 20000 is default
+  timeout: 20000 // 20000 is default
 }
 
-app.configure(Server({
+app.configure(
+  Server({
+    appName: AppName,
+    natsConfig: natsConfig
+  })
+)
+
+app.use(Client({
   appName: AppName,
   natsConfig: natsConfig
 }));
 
-const errorHandler2 = () => async (ctx: any, next: () => Promise<any>) => {
+const errorHandler2 = () => async (ctx: FeathersKoaContext, next: () => Promise<any>) => {
   try {
     await next()
     ctx.body = {}
@@ -101,7 +108,55 @@ const errorHandler2 = () => async (ctx: any, next: () => Promise<any>) => {
           }
   }
 }
+
+// const errorHandler3 = function () {
+//   return async (ctx: any, next: () => Promise<any>) => {
+//     try {
+//       await next()
+//       ctx.body = {}
+//       // if (ctx.body === undefined) {
+//       //   throw new NotFound(`Path ${ctx.path} not found`)
+//       // }
+//     } catch (error: any) {
+//       ctx.response.status = error instanceof FeathersError ? error.code : 500
+//       ctx.body =
+//         typeof error.toJSON === 'function'
+//           ? error.toJSON()
+//           : {
+//               message: error.message
+//             }
+//     }
+//   }
+// }
 app.use(errorHandler2())
+//app.use(errorHandler3())
+
+// const Client2 = function (config: InitConfig) {
+//   return async function (ctx: any, next: () => Promise<any>) {
+//     try {
+//       debug('im here')
+//       await next()
+//       ctx.body = {}
+//       // if (ctx.body === undefined) {
+//       //   throw new NotFound(`Path ${ctx.path} not found`)
+//       // }
+//     } catch (error: any) {
+//       ctx.response.status = error instanceof FeathersError ? error.code : 500
+//       ctx.body =
+//         typeof error.toJSON === 'function'
+//           ? error.toJSON()
+//           : {
+//               message: error.message
+//             }
+//     }
+//   }
+// }
+// app.use(
+//   Client2({
+//     appName: AppName,
+//     natsConfig: natsConfig
+//   })
+// )
 
 app.configure(
   sync({
@@ -109,7 +164,7 @@ app.configure(
     key: 'feathers-sync.nats',
     natsConnectionOptions: natsConfig
   })
-);
+)
 
 export { app }
 // nats request ServerName.users.create '{"data": {"email":"nathan.brizzee4@cdcr.ca.gov", "password": "supersecret"}}'
@@ -119,4 +174,3 @@ export { app }
 // nats request ServerName.get.users '{"id": "1"}'
 // nats request ServerName.find.users '{"params": {"query": {"$limit":1, "$skip": 1}}}'
 // nats sub "*.>"
-
