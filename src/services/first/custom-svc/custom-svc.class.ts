@@ -3,7 +3,7 @@ import type { Id, NullableId, Params, ServiceInterface } from '@feathersjs/feath
 
 import type { Application } from '../../../declarations'
 import type { CustomSvc, CustomSvcData, CustomSvcPatch, CustomSvcQuery } from './custom-svc.schema'
-
+import { NatsService } from 'feathers-nats-distributed'
 export type { CustomSvc, CustomSvcData, CustomSvcPatch, CustomSvcQuery }
 
 export interface CustomSvcServiceOptions {
@@ -18,8 +18,11 @@ export class CustomSvcService<ServiceParams extends Params = CustomSvcParams>
 {
   constructor(public options: CustomSvcServiceOptions) {}
 
-  async find(_params?: ServiceParams): Promise<CustomSvc[]> {
-    return []
+  async find(_params?: ServiceParams): Promise<any[]> {
+    // @ts-expect-error
+    const natsService = this.options.app.get("NatsService") as NatsService
+    const reply:any = await natsService.find("cdcr-testsrv2", "api/users", _params)
+    return reply
   }
 
   async get(id: Id, _params?: ServiceParams): Promise<CustomSvc> {

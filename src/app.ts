@@ -24,7 +24,7 @@ const debug = require('debug')
 
 feathers.setDebug(debug)
 
-import { Server, Client, InitConfig } from 'feathers-nats-distributed'
+import { Server, Client } from 'feathers-nats-distributed'
 import { nats as sync } from 'feathers-sync'
 
 const app: Application = koa(feathers())
@@ -86,28 +86,35 @@ app.configure(
   })
 )
 
-app.use(Client({
-  appName: AppName,
-  natsConfig: natsConfig
-}));
+app.configure(
+  Client({
+    appName: AppName,
+    natsConfig: natsConfig
+  })
+)
 
-const errorHandler2 = () => async (ctx: FeathersKoaContext, next: () => Promise<any>) => {
-  try {
-    await next()
-    ctx.body = {}
-    // if (ctx.body === undefined) {
-    //   throw new NotFound(`Path ${ctx.path} not found`)
-    // }
-  } catch (error: any) {
-    ctx.response.status = error instanceof FeathersError ? error.code : 500
-    ctx.body =
-      typeof error.toJSON === 'function'
-        ? error.toJSON()
-        : {
-            message: error.message
-          }
-  }
-}
+// app.use(Client({
+//   appName: AppName,
+//   natsConfig: natsConfig
+// }));
+
+// const errorHandler2 = () => async (ctx: FeathersKoaContext, next: () => Promise<any>) => {
+//   try {
+//     await next()
+//     //ctx.body = {}
+//     if (ctx.body === undefined) {
+//       throw new NotFound(`Path ${ctx.path} not found`)
+//     }
+//   } catch (error: any) {
+//     ctx.response.status = error instanceof FeathersError ? error.code : 500
+//     ctx.body =
+//       typeof error.toJSON === 'function'
+//         ? error.toJSON()
+//         : {
+//             message: error.message
+//           }
+//   }
+// }
 
 // const errorHandler3 = function () {
 //   return async (ctx: any, next: () => Promise<any>) => {
@@ -128,35 +135,8 @@ const errorHandler2 = () => async (ctx: FeathersKoaContext, next: () => Promise<
 //     }
 //   }
 // }
-app.use(errorHandler2())
+// app.use(errorHandler2())
 //app.use(errorHandler3())
-
-// const Client2 = function (config: InitConfig) {
-//   return async function (ctx: any, next: () => Promise<any>) {
-//     try {
-//       debug('im here')
-//       await next()
-//       ctx.body = {}
-//       // if (ctx.body === undefined) {
-//       //   throw new NotFound(`Path ${ctx.path} not found`)
-//       // }
-//     } catch (error: any) {
-//       ctx.response.status = error instanceof FeathersError ? error.code : 500
-//       ctx.body =
-//         typeof error.toJSON === 'function'
-//           ? error.toJSON()
-//           : {
-//               message: error.message
-//             }
-//     }
-//   }
-// }
-// app.use(
-//   Client2({
-//     appName: AppName,
-//     natsConfig: natsConfig
-//   })
-// )
 
 app.configure(
   sync({
