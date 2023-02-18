@@ -18,18 +18,17 @@ export class CustomSvcService<ServiceParams extends Params = CustomSvcParams>
 {
   constructor(public options: CustomSvcServiceOptions) {}
 
-  async find(_params?: ServiceParams): Promise<any[]> {
-    // @ts-expect-error
-    const natsService = this.options.app.get("NatsService") as NatsService
-    const reply:any = await natsService.find("cdcr-testsrv2", "api/users", _params)
+  async find(_params?: ServiceParams): Promise<CustomSvc[]> {
+    const natsService = this.options.app.get('NatsService') as NatsService
+    console.log(_params)
+    const reply: any = await natsService.find('@cdcr/testsrv2', 'api/users', _params)
     return reply
   }
 
   async get(id: Id, _params?: ServiceParams): Promise<CustomSvc> {
-    return {
-      id: 0,
-      text: `A new message with ID: ${id}!`
-    }
+    const natsService = this.options.app.get('NatsService') as NatsService
+    const reply: any = await natsService.get('@cdcr/testsrv2', 'api/users', id, _params)
+    return reply
   }
 
   async create(data: CustomSvcData, params?: ServiceParams): Promise<CustomSvc>
@@ -41,34 +40,28 @@ export class CustomSvcService<ServiceParams extends Params = CustomSvcParams>
     if (Array.isArray(data)) {
       return Promise.all(data.map((current) => this.create(current, params)))
     }
-
-    return {
-      id: 0,
-      ...data
-    }
+    const natsService = this.options.app.get('NatsService') as NatsService
+    const reply: any = await natsService.create('@cdcr/testsrv2', 'api/users', data, params)
+    return reply
   }
 
   // This method has to be added to the 'methods' option to make it available to clients
   async update(id: NullableId, data: CustomSvcData, _params?: ServiceParams): Promise<CustomSvc> {
-    return {
-      id: 0,
-      ...data
-    }
+    const natsService = this.options.app.get('NatsService') as NatsService
+    const reply: any = await natsService.update('@cdcr/testsrv2', 'api/users', id, data, _params)
+    return reply
   }
 
   async patch(id: NullableId, data: CustomSvcPatch, _params?: ServiceParams): Promise<CustomSvc> {
-    return {
-      id: 0,
-      text: `Fallback for ${id}`,
-      ...data
-    }
+    const natsService = this.options.app.get('NatsService') as NatsService
+    const reply: any = await natsService.patch('@cdcr/testsrv2', 'api/users', id, data, _params)
+    return reply
   }
 
   async remove(id: NullableId, _params?: ServiceParams): Promise<CustomSvc> {
-    return {
-      id: 0,
-      text: 'removed'
-    }
+    const natsService = this.options.app.get('NatsService') as NatsService
+    const reply: any = await natsService.remove('@cdcr/testsrv2', 'api/users', id, _params)
+    return reply
   }
 }
 

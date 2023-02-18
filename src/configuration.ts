@@ -5,6 +5,12 @@ import { dataValidator } from './validators'
 
 export const configurationSchema = Type.Intersect([
   defaultAppConfiguration,
+  Type.Optional(Type.Object({
+    NatsService:Type.Object({}),
+  })),
+  Type.Optional(Type.Object({
+    NatsInstance:Type.Object({}),
+  })),
   Type.Object({
     host: Type.String(),
     port: Type.Number(),

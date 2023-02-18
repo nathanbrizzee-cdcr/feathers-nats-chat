@@ -10,7 +10,8 @@ import { dataValidator, queryValidator } from '../../../validators'
 export const customSvcSchema = Type.Object(
   {
     id: Type.Number(),
-    text: Type.String()
+    email: Type.String(),
+    password: Type.Optional(Type.String())
   },
   { $id: 'CustomSvc', additionalProperties: false }
 )
@@ -21,7 +22,7 @@ export const customSvcResolver = resolve<CustomSvc, HookContext>({})
 export const customSvcExternalResolver = resolve<CustomSvc, HookContext>({})
 
 // Schema for creating new entries
-export const customSvcDataSchema = Type.Pick(customSvcSchema, ['text'], {
+export const customSvcDataSchema = Type.Pick(customSvcSchema, ['email', 'password'], {
   $id: 'CustomSvcData'
 })
 export type CustomSvcData = Static<typeof customSvcDataSchema>
@@ -37,7 +38,7 @@ export const customSvcPatchValidator = getValidator(customSvcPatchSchema, dataVa
 export const customSvcPatchResolver = resolve<CustomSvc, HookContext>({})
 
 // Schema for allowed query properties
-export const customSvcQueryProperties = Type.Pick(customSvcSchema, ['id', 'text'])
+export const customSvcQueryProperties = Type.Pick(customSvcSchema, ['id', 'email'])
 export const customSvcQuerySchema = Type.Intersect(
   [
     querySyntax(customSvcQueryProperties),
