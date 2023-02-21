@@ -81,6 +81,7 @@ const url: string = 'nats.local'
 const port: number = 4222
 const NATSurl: string = `nats://${url}:${port}`
 const AppName = String(packageFile.name) || ''
+const AppVersion = String(packageFile.version) || ''
 const natsConfig: ConnectionOptions = {
   servers: ['nats.local:4222'],
   name: AppName,
@@ -90,6 +91,7 @@ const natsConfig: ConnectionOptions = {
 app.configure(
   Server({
     appName: AppName,
+    appVersion: AppVersion,
     natsConfig: natsConfig,
     servicePublisher: {
       publishServices: true,
@@ -102,6 +104,7 @@ app.configure(
 app.configure(
   Client({
     appName: AppName,
+    appVersion: AppVersion,
     natsConfig: natsConfig
   })
 )
