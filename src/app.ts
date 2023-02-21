@@ -71,7 +71,6 @@ app.hooks({
 const url: string = 'nats.local'
 const port: number = 4222
 const NATSurl: string = `nats://${url}:${port}`
-//const AppName = String(packageFile.name).split("/").pop()?.replace("@", "") || ""
 const AppName = String(packageFile.name) || ''
 const natsConfig: ConnectionOptions = {
   servers: ['nats.local:4222'],
@@ -82,14 +81,19 @@ const natsConfig: ConnectionOptions = {
 app.configure(
   Server({
     appName: AppName,
-    natsConfig: natsConfig
+    natsConfig: natsConfig,
+    servicePublisher: {
+    publishServices: true,
+    servicesIgnoreList: ["authentication"],
+    publishDelay: 60000
+    }
   })
 )
 
 app.configure(
   Client({
     appName: AppName,
-    natsConfig: natsConfig
+    natsConfig: natsConfig,
   })
 )
 
