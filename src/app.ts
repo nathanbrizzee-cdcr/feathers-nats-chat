@@ -6,7 +6,16 @@ import 'dotenv/config'
 
 import { feathers } from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
-import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic, FeathersKoaContext } from '@feathersjs/koa'
+import {
+  koa,
+  rest,
+  bodyParser,
+  errorHandler,
+  parseAuthentication,
+  cors,
+  serveStatic,
+  FeathersKoaContext
+} from '@feathersjs/koa'
 //import socketio from '@feathersjs/socketio'
 import { FeathersError, NotFound, GeneralError } from '@feathersjs/errors'
 import type { Application } from './declarations'
@@ -83,9 +92,9 @@ app.configure(
     appName: AppName,
     natsConfig: natsConfig,
     servicePublisher: {
-    publishServices: true,
-    servicesIgnoreList: ["authentication"],
-    publishDelay: 60000
+      publishServices: true,
+      servicesIgnoreList: ['authentication'],
+      publishDelay: 60000
     }
   })
 )
@@ -93,7 +102,7 @@ app.configure(
 app.configure(
   Client({
     appName: AppName,
-    natsConfig: natsConfig,
+    natsConfig: natsConfig
   })
 )
 
