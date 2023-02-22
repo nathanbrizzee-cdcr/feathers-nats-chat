@@ -16,11 +16,11 @@ export interface CustomSvcParams extends Params<CustomSvcQuery> {}
 export class CustomSvcService<ServiceParams extends Params = CustomSvcParams>
   implements ServiceInterface<CustomSvc, CustomSvcData, ServiceParams, CustomSvcPatch>
 {
-  constructor(public options: CustomSvcServiceOptions) {}
+  constructor(public options: CustomSvcServiceOptions) {
+  }
 
   async find(_params?: ServiceParams): Promise<CustomSvc[]> {
     const natsService = this.options.app.get('NatsService') as NatsService
-    console.log(_params)
     const reply: any = await natsService.find('@cdcr/testsrv2', 'api/users', _params)
     return reply
   }
