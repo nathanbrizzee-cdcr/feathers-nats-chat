@@ -105,7 +105,12 @@ app.configure(
   Client({
     appName: AppName,
     appVersion: AppVersion,
-    natsConfig: natsConfig
+    natsConfig: natsConfig,
+    circuitBreakerConfig: {
+      requestTimeout: 5000,
+      resetTimeout: 30000,
+      errorThresholdPercentage: 50
+    }
   })
 )
 
