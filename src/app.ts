@@ -13,8 +13,7 @@ import {
   errorHandler,
   parseAuthentication,
   cors,
-  serveStatic,
-  FeathersKoaContext
+  serveStatic
 } from '@feathersjs/koa'
 //import socketio from '@feathersjs/socketio'
 import { FeathersError, NotFound, GeneralError } from '@feathersjs/errors'
@@ -94,7 +93,7 @@ app.configure(
     appVersion: AppVersion,
     natsConfig: natsConfig,
     servicePublisher: {
-      publishServices: true,
+      publishServices: false,
       servicesIgnoreList: ['authentication'],
       publishDelay: 60000
     }
@@ -107,57 +106,13 @@ app.configure(
     appVersion: AppVersion,
     natsConfig: natsConfig,
     circuitBreakerConfig: {
+      enabled: true,
       requestTimeout: 5000,
       resetTimeout: 30000,
       errorThresholdPercentage: 50
     }
   })
 )
-
-// app.use(Client({
-//   appName: AppName,
-//   natsConfig: natsConfig
-// }));
-
-// const errorHandler2 = () => async (ctx: FeathersKoaContext, next: () => Promise<any>) => {
-//   try {
-//     await next()
-//     //ctx.body = {}
-//     if (ctx.body === undefined) {
-//       throw new NotFound(`Path ${ctx.path} not found`)
-//     }
-//   } catch (error: any) {
-//     ctx.response.status = error instanceof FeathersError ? error.code : 500
-//     ctx.body =
-//       typeof error.toJSON === 'function'
-//         ? error.toJSON()
-//         : {
-//             message: error.message
-//           }
-//   }
-// }
-
-// const errorHandler3 = function () {
-//   return async (ctx: any, next: () => Promise<any>) => {
-//     try {
-//       await next()
-//       ctx.body = {}
-//       // if (ctx.body === undefined) {
-//       //   throw new NotFound(`Path ${ctx.path} not found`)
-//       // }
-//     } catch (error: any) {
-//       ctx.response.status = error instanceof FeathersError ? error.code : 500
-//       ctx.body =
-//         typeof error.toJSON === 'function'
-//           ? error.toJSON()
-//           : {
-//               message: error.message
-//             }
-//     }
-//   }
-// }
-// app.use(errorHandler2())
-//app.use(errorHandler3())
 
 app.configure(
   sync({
