@@ -26,8 +26,6 @@ import { services } from './services/index'
 import { channels } from './channels'
 import { ConnectionOptions } from 'nats'
 
-const packageFile = require('../package.json')
-
 const debug = require('debug')
 
 feathers.setDebug(debug)
@@ -76,6 +74,7 @@ app.hooks({
   teardown: []
 })
 
+const packageFile = require('../package.json')
 const url: string = 'nats.local'
 const port: number = 4222
 const NATSurl: string = `nats://${url}:${port}`
@@ -105,7 +104,7 @@ app.configure(
     appName: AppName,
     appVersion: AppVersion,
     natsConfig: natsConfig,
-    circuitBreakerConfig: {
+    circuitBreaker: {
       enabled: true,
       requestTimeout: 5000,
       resetTimeout: 30000,
