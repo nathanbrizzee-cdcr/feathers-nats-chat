@@ -18,7 +18,7 @@ export type CustomSvcClientService = Pick<
 
 export const customSvcPath = '/first/custom-svc'
 
-export const customSvcMethods = ['find', 'get', 'create', 'update', 'patch', 'remove'] as const
+export const customSvcMethods = ['find', 'get', 'create', 'update', 'patch', 'remove', 'schema'] as const
 
 export const customSvcClient = (client: ClientApplication) => {
   const connection = client.get('connection')

@@ -11,7 +11,7 @@ import { dataValidator, queryValidator } from '../../validators'
 export const userSchema = Type.Object(
   {
     id: Type.Number(),
-    email: Type.String(),
+    email: Type.String({format:'email'}),
     password: Type.Optional(Type.String())
   },
   { $id: 'User', additionalProperties: false }

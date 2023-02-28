@@ -3,6 +3,8 @@ import type { Id, NullableId, Params, ServiceInterface } from '@feathersjs/feath
 
 import type { Application } from '../../../declarations'
 import type { CustomSvc, CustomSvcData, CustomSvcPatch, CustomSvcQuery } from './custom-svc.schema'
+import { customSvcSchema, customSvcDataSchema, customSvcPatchSchema, customSvcQuerySchema } from './custom-svc.schema'
+
 import { NatsService } from 'feathers-nats-distributed'
 export type { CustomSvc, CustomSvcData, CustomSvcPatch, CustomSvcQuery }
 
@@ -17,6 +19,18 @@ export class CustomSvcService<ServiceParams extends Params = CustomSvcParams>
   implements ServiceInterface<CustomSvc, CustomSvcData, ServiceParams, CustomSvcPatch>
 {
   constructor(public options: CustomSvcServiceOptions) {
+  }
+
+  async schema(data: any, params?: Params):Promise<object> {
+    return {
+      serviceSchema: {
+        "$schema": "http://json-schema.org/draft-06/schema#",
+        ...customSvcSchema
+      },
+      createSchema: customSvcDataSchema,
+      patchSchema: customSvcPatchSchema,
+      querySchema: customSvcQuerySchema
+    } 
   }
 
   async find(_params?: ServiceParams): Promise<CustomSvc[]> {
